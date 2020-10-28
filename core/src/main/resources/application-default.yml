@@ -1,0 +1,8 @@
+amazon:
+  dynamodb:
+    endpoint: "https://dynamodb.ap-northeast-2.amazonaws.com"
+    region: "ap-northeast-2"
+    tablePrefix: "grape-sticker"
+  aws:
+    accesskey: "AKIA4X2PJ4464WBLTRPD"
+    secretkey: "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"

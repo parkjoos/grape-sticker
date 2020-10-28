@@ -24,10 +24,6 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 	}
-	testImplementation("com.github.springtestdbunit:spring-test-dbunit:1.3.0")
-	testImplementation("org.dbunit:dbunit:2.6.0") {
-		exclude(group = "junit", module = "junit")
-	}
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	testImplementation("io.projectreactor:reactor-test")

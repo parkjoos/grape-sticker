@@ -1,8 +1,8 @@
-package com.kakao.jaypark.grapesticker.core.repository.bunch
+package com.kakao.jaypark.grapesticker.core.repository.member
 
 import com.kakao.jaypark.grapesticker.core.CoreApplication
-import com.kakao.jaypark.grapesticker.core.domain.Bunch
-import com.kakao.jaypark.grapesticker.core.repository.BunchRepository
+import com.kakao.jaypark.grapesticker.core.domain.Member
+import com.kakao.jaypark.grapesticker.core.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -14,16 +14,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [CoreApplication::class])
 @ActiveProfiles("test")
-class BunchRepositoryTest() {
+class MemberRepositoryTest() {
 
     @Autowired
-    lateinit var bunchRepository: BunchRepository
+    lateinit var memberRepository: MemberRepository
 
     @Test
     fun test() {
-        val bunch = Bunch(name = "포도송이1", maxNumberOfGrapes = 10)
-        bunchRepository.save(bunch)
-        assertThat(bunch).extracting("id").isNotNull()
-
+        val member = Member(name = "jay.park", email = "jay.park@kakao.com")
+        memberRepository.save(member)
+        assertThat(member).extracting("id").isNotNull()
     }
 }
