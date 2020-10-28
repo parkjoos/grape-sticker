@@ -5,11 +5,12 @@
 - members : list of Members
 - numberOfGrapes
 - grapes : set of Grapes
+- createdDate
 
 ### grape
 - brunch : Brunch
 - position
-- date
+- createdDate
 - type : Enum (PRAISE, BLAME)
 - commnet
 - writer : Member
