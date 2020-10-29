@@ -1,20 +1,13 @@
 package com.kakao.jaypark.grapesticker.core.repository.member
 
-import com.kakao.jaypark.grapesticker.core.CoreApplication
 import com.kakao.jaypark.grapesticker.core.domain.Member
+import com.kakao.jaypark.grapesticker.core.repository.AbstractRepositoryTest
 import com.kakao.jaypark.grapesticker.core.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [CoreApplication::class])
-@ActiveProfiles("test")
-class MemberRepositoryTest() {
+class MemberRepositoryTest : AbstractRepositoryTest(){
 
     @Autowired
     lateinit var memberRepository: MemberRepository

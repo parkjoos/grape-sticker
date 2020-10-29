@@ -5,6 +5,7 @@ import com.kakao.jaypark.grapesticker.core.domain.Bunch
 import com.kakao.jaypark.grapesticker.core.domain.BunchMember
 import com.kakao.jaypark.grapesticker.core.domain.BunchMemberKey
 import com.kakao.jaypark.grapesticker.core.domain.Member
+import com.kakao.jaypark.grapesticker.core.repository.AbstractRepositoryTest
 import com.kakao.jaypark.grapesticker.core.repository.BunchMemberRepository
 import com.kakao.jaypark.grapesticker.core.repository.BunchRepository
 import com.kakao.jaypark.grapesticker.core.repository.MemberRepository
@@ -16,10 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [CoreApplication::class])
-@ActiveProfiles("test")
-class BunchMemberRepositoryTest() {
+class BunchMemberRepositoryTest : AbstractRepositoryTest() {
 
     @Autowired
     lateinit var bunchRepository: BunchRepository

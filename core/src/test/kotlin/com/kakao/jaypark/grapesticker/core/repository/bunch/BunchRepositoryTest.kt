@@ -2,6 +2,7 @@ package com.kakao.jaypark.grapesticker.core.repository.bunch
 
 import com.kakao.jaypark.grapesticker.core.CoreApplication
 import com.kakao.jaypark.grapesticker.core.domain.Bunch
+import com.kakao.jaypark.grapesticker.core.repository.AbstractRepositoryTest
 import com.kakao.jaypark.grapesticker.core.repository.BunchRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -11,10 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [CoreApplication::class])
-@ActiveProfiles("test")
-class BunchRepositoryTest() {
+class BunchRepositoryTest : AbstractRepositoryTest() {
 
     @Autowired
     lateinit var bunchRepository: BunchRepository
