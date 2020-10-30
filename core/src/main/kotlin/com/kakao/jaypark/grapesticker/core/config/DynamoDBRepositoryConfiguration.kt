@@ -5,24 +5,17 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
+import com.amazonaws.services.dynamodbv2.datamodeling.*
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.*
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
-import org.springframework.data.auditing.CurrentDateTimeProvider
-import org.springframework.data.auditing.DateTimeProvider
-
-
-
 
 
 @Configuration
-@EnableDynamoDBRepositories(basePackages = ["com.kakao.jaypark.grapesticker.core.repository"])
+@EnableDynamoDBRepositories(basePackages = ["com.kakao.jaypark.grapesticker.core.repository"], dynamoDBMapperConfigRef = "dynamoDBMapperConfig")
 class DynamoDBRepositoryConfiguration {
     @Value("\${amazon.dynamodb.endpoint}")
     private val amazonDynamoDbEndpoint: String? = null
@@ -40,11 +33,18 @@ class DynamoDBRepositoryConfiguration {
     @Bean
     @Primary
     fun dynamoDBMapperConfig(): DynamoDBMapperConfig? {
-        return DynamoDBMapperConfig.builder()
+        return builder()
+                .withSaveBehavior(SaveBehavior.UPDATE)
+                .withConsistentReads(ConsistentReads.EVENTUAL)
+                .withPaginationLoadingStrategy(PaginationLoadingStrategy.LAZY_LOADING)
+                .withBatchWriteRetryStrategy(DefaultBatchWriteRetryStrategy.INSTANCE)
+                .withBatchLoadRetryStrategy(DefaultBatchLoadRetryStrategy.INSTANCE)
+                .withTypeConverterFactory(DynamoDBTypeConverterFactory.standard())
+                .withConversionSchema(ConversionSchemas.V2_COMPATIBLE)
                 .withTableNameResolver { clazz, config ->
                     val dynamoDBTable = clazz.getDeclaredAnnotation(DynamoDBTable::class.java)
                             ?: throw DynamoDBMappingException("$clazz not annotated with @DynamoDBTable")
-                    return@withTableNameResolver tablePrefix + "-" + dynamoDBTable.tableName + "-" +tableSuffix
+                    return@withTableNameResolver tablePrefix + "-" + dynamoDBTable.tableName + "-" + tableSuffix
                 }.build()
     }
 

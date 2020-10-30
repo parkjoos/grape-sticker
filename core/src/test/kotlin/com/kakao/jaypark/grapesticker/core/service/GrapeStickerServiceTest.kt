@@ -2,6 +2,7 @@ package com.kakao.jaypark.grapesticker.core.service
 
 import com.kakao.jaypark.grapesticker.core.domain.Bunch
 import com.kakao.jaypark.grapesticker.core.domain.Grape
+import com.kakao.jaypark.grapesticker.core.domain.Member
 import com.kakao.jaypark.grapesticker.core.repository.BunchMemberRepository
 import com.kakao.jaypark.grapesticker.core.repository.BunchRepository
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -32,7 +33,7 @@ class GrapeStickerServiceTest {
     fun testAttachSticker(){
         val bunch = Bunch(id="testbundch-se4agf-weg-ae4tg", name = "testbunch")
         val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g")
-        grapeStickerService.attach(bunch, grape)
+        grapeStickerService.attach(bunch, grape, Member(id="tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com",name="jay.park"))
     }
 
     @Test
@@ -40,10 +41,10 @@ class GrapeStickerServiceTest {
         assertThatThrownBy {
             val bunch = Bunch(id="testbundch-se4agf-weg-ae4tg", name = "testbunch")
             val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g")
-            grapeStickerService.attach(bunch, grape)
+            grapeStickerService.attach(bunch, grape, Member(id="tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com",name="jay.park"))
 
             val grape2 = Grape(position = 5, comment = "sicker2", writerId = "ememberis32-345g245-45g")
-            grapeStickerService.attach(bunch, grape2)
+            grapeStickerService.attach(bunch, grape2, Member(id="tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com",name="jay.park"))
         }.isInstanceOf(RuntimeException::class.java)
                 .hasMessage("grape position duplicated")
     }

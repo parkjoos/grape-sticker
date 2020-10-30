@@ -1,7 +1,15 @@
 spring:
   profiles:
     include: default
+  data:
+    dynamodb:
+      entity2ddl:
+        auto: create-only
+        gsiProjectionType: ALL
+        readCapacity: 1
+        writeCapacity: 1
 
 amazon:
   dynamodb:
-    tableSuffix: "test"
+    tableSuffix: "dev"
+
