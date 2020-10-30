@@ -1,5 +1,5 @@
 package com.kakao.jaypark.grapesticker.core.domain
 
-enum class GrapeType {
+enum class GrapeStickerType {
     PRAISE, BLAME
 }

@@ -7,9 +7,9 @@ import java.io.Serializable
 data class BunchMemberKey(
         @DynamoDBHashKey(attributeName = "bunchId")
         @DynamoDBIndexRangeKey(globalSecondaryIndexName = "ByMember")
-        var bunchId: String,
+        var bunchId: String? = null,
 
         @DynamoDBRangeKey(attributeName = "memberId")
         @DynamoDBIndexHashKey(globalSecondaryIndexName = "ByMember")
-        var memberId: String
+        var memberId: String? = null
 ) : Serializable
