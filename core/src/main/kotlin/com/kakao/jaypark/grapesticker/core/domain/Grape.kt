@@ -17,6 +17,4 @@ data class Grape(
         var comment: String? =  null,
         @DynamoDBAttribute
         var writerId: String
-) {
-
-}
+)

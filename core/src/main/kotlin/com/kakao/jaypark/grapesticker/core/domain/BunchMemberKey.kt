@@ -6,10 +6,10 @@ import java.io.Serializable
 @DynamoDBDocument
 data class BunchMemberKey(
         @DynamoDBHashKey(attributeName = "bunchId")
-        @DynamoDBIndexRangeKey(globalSecondaryIndexName = "ByMember")
+        @DynamoDBIndexRangeKey(globalSecondaryIndexName = "idx-by-memberId")
         var bunchId: String? = null,
 
         @DynamoDBRangeKey(attributeName = "memberId")
-        @DynamoDBIndexHashKey(globalSecondaryIndexName = "ByMember")
+        @DynamoDBIndexHashKey(globalSecondaryIndexName = "idx-by-memberId")
         var memberId: String? = null
 ) : Serializable
