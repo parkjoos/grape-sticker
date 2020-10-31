@@ -14,14 +14,14 @@ data class Member(
         @DynamoDBAttribute
         @DynamoDBIndexHashKey(globalSecondaryIndexName = "idx-member-email", attributeName = "email")
         @NotNull
-        var email:String?=null,
+        var email: String? = null,
 
         @DynamoDBAttribute
         @NotNull
-        var name:String?=null,
+        var name: String? = null,
 
         @DynamoDBAttribute
         @NotNull
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        var status:MemberStatus = MemberStatus.PENDING
+        var status: MemberStatus = MemberStatus.PENDING
 )

@@ -9,20 +9,20 @@ import com.kakao.jaypark.grapesticker.core.repository.MemberRepository
 import org.springframework.stereotype.Service
 
 @Service
-class MemberService (
+class MemberService(
         private var memberRepository: MemberRepository,
         private var bunchMemberRepository: BunchMemberRepository,
         private var bunchRepository: BunchRepository
-){
+) {
     fun join(member: Member) {
-        memberRepository.findByEmail(member.email!!).forEach{
+        memberRepository.findByEmail(member.email!!).forEach {
             var message = "already joined email"
-            if(it.status == MemberStatus.PENDING){
+            if (it.status == MemberStatus.PENDING) {
                 message = "email pending activation, try to activate your email"
             }
             throw RuntimeException(message)
         }
-        memberRepository.save(member);
+        memberRepository.save(member)
     }
 
     fun withdrawal(member: Member) {
@@ -33,7 +33,7 @@ class MemberService (
         bunchesByMember.forEach {
             bunchMemberRepository.delete(it)
             val bunchMembers = bunchMemberRepository.findByBunchId(it.getBunchId())
-            if(bunchMembers.isEmpty()){
+            if (bunchMembers.isEmpty()) {
                 val bunch = bunchRepository.findById(it.getBunchId()).orElseThrow { RuntimeException("bunch not found") }
                 bunchRepository.delete(bunch)
             } else {
@@ -48,7 +48,7 @@ class MemberService (
         return memberRepository.findByEmail(email).firstOrNull()
     }
 
-    fun getBunchMembers(bunch: Bunch) : Set<Member> {
+    fun getBunchMembers(bunch: Bunch): Set<Member> {
         val bunchMembers = bunchMemberRepository.findByBunchId(bunch.id!!)
         return memberRepository.findByIdIn(bunchMembers.map { it.getMemberId() }.toSet())
     }

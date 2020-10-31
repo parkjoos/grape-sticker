@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAutoGenerateStrate
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAutoGenerator
 import java.time.LocalDateTime
 
-class LastModifiedDateGenerator : DynamoDBAutoGenerator<LocalDateTime>{
+class LastModifiedDateGenerator : DynamoDBAutoGenerator<LocalDateTime> {
     override fun generate(currentValue: LocalDateTime?): LocalDateTime {
         return LocalDateTime.now()
     }
