@@ -41,7 +41,7 @@ class DynamoDBRepositoryConfiguration {
                 .withBatchLoadRetryStrategy(DefaultBatchLoadRetryStrategy.INSTANCE)
                 .withTypeConverterFactory(DynamoDBTypeConverterFactory.standard())
                 .withConversionSchema(ConversionSchemas.V2_COMPATIBLE)
-                .withTableNameResolver { clazz, config ->
+                .withTableNameResolver { clazz, _ ->
                     val dynamoDBTable = clazz.getDeclaredAnnotation(DynamoDBTable::class.java)
                             ?: throw DynamoDBMappingException("$clazz not annotated with @DynamoDBTable")
                     return@withTableNameResolver tablePrefix + "-" + dynamoDBTable.tableName + "-" + tableSuffix
