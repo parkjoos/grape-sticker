@@ -126,4 +126,9 @@ class MemberServiceTest {
                 .thenReturn(null)
         memberService.addToBunch(Bunch(id = "34f34f-f34f43-34f34f"), Member(id = "34faefa-ew5gfdg45fg-34tasrt"))
     }
+
+    @Test
+    fun testRemoveMember() {
+        memberService.removeFromBunch(Bunch(id = "34f34f-f34f43-34f34f"), Member(id = "34faefa-ew5gfdg45fg-34tasrt"))
+    }
 }

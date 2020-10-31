@@ -74,7 +74,7 @@ class MemberService(
         if (bunchMembers.stream().anyMatch { it.type == MemberType.MASTER }) {
             return
         }
-        val oldestMember = bunchMembers.minBy { member -> member.createdDate!! };
+        val oldestMember = bunchMembers.minBy { member -> member.createdDate!! }
         makeMaster(bunch, get(oldestMember?.getMemberId()!!))
     }
 
@@ -95,5 +95,12 @@ class MemberService(
             throw RuntimeException("already member")
         }
         bunchMemberRepository.save(BunchMember(BunchMemberKey(bunchId = bunch.id!!, memberId = member.id!!), type = MemberType.MEMBER))
+    }
+
+    fun removeFromBunch(bunch: Bunch, member: Member) {
+        get(member.id!!)
+        val bunchMember = bunchMemberRepository.findByBunchIdAndMemberId(bunch.id!!, member.id!!)
+                ?: throw RuntimeException("already removed")
+        bunchMemberRepository.delete(bunchMember)
     }
 }

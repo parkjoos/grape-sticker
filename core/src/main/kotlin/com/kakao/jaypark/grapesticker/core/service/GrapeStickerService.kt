@@ -18,5 +18,9 @@ class GrapeStickerService(
         bunchRepository.save(bunch)
     }
 
-    //TODO remove
+    fun remove(bunch: Bunch, grape: Grape) {
+        bunch.grapes?.removeIf { it.position == grape.position }
+        bunchRepository.save(bunch)
+    }
+
 }
