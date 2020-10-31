@@ -19,7 +19,7 @@ data class Grape(
         var createdDate: LocalDateTime? = null,
 
         @DynamoDBAttribute
-        var comment: String? =  null,
+        var comment: String? = null,
 
         @DynamoDBAttribute
         @NotNull

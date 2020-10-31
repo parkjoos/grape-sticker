@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class GrapeStickerService (
+class GrapeStickerService(
         var bunchRepository: BunchRepository
-){
+) {
     fun attach(bunch: Bunch, grape: Grape, member: Member) {
         grape.createdDate = LocalDateTime.now()
         grape.writerId = member.id!!

@@ -32,20 +32,20 @@ data class BunchMember(
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
         @NotNull
         var type: MemberType = MemberType.MASTER
-){
-        @DynamoDBHashKey
-        @DynamoDBIndexRangeKey(globalSecondaryIndexName = "idx-by-memberId")
-        fun getBunchId() = key.bunchId.orEmpty()
+) {
+    @DynamoDBHashKey
+    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "idx-by-memberId")
+    fun getBunchId() = key.bunchId.orEmpty()
 
-        fun setBunchId(bunchId: String) {
-                key.bunchId = bunchId
-        }
+    fun setBunchId(bunchId: String) {
+        key.bunchId = bunchId
+    }
 
-        @DynamoDBRangeKey
-        @DynamoDBIndexHashKey(globalSecondaryIndexName = "idx-by-memberId")
-        fun getMemberId() = key.memberId.orEmpty()
+    @DynamoDBRangeKey
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "idx-by-memberId")
+    fun getMemberId() = key.memberId.orEmpty()
 
-        fun setMemberId(memberId: String) {
-                key.memberId = memberId
-        }
+    fun setMemberId(memberId: String) {
+        key.memberId = memberId
+    }
 }

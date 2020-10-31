@@ -5,7 +5,7 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScan
 import org.springframework.data.repository.CrudRepository
 
 @EnableScan
-interface BunchMemberRepository : CrudRepository<BunchMember, String>{
+interface BunchMemberRepository : CrudRepository<BunchMember, String> {
     fun findAllByMemberId(memberId: String): Set<BunchMember>
     fun findByBunchId(bunchId: String): Set<BunchMember>
 }
