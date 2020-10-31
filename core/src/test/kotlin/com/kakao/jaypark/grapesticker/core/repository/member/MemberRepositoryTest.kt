@@ -13,7 +13,7 @@ class MemberRepositoryTest : AbstractRepositoryTest(){
     lateinit var memberRepository: MemberRepository
 
     @Test
-    fun test() {
+    fun testSave() {
         val member = Member(name = "jay.park", email = "jay.park@kakao.com")
         memberRepository.save(member)
         assertThat(member).extracting("id").isNotNull()
@@ -28,6 +28,5 @@ class MemberRepositoryTest : AbstractRepositoryTest(){
         assertThat(result).allSatisfy {
             assertThat(it.name).isEqualTo("jay.park")
         }
-
     }
 }
