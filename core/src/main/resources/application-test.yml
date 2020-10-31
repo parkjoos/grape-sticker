@@ -11,5 +11,10 @@ spring:
 
 amazon:
   dynamodb:
-    tableSuffix: "dev"
-
+    endpoint: "http://localhost:8000"
+    region: "ap-northeast-2"
+    tablePrefix: "grape-sticker"
+    tableSuffix: "test"
+  aws:
+    accesskey: "test"
+    secretkey: "test"

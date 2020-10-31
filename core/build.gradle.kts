@@ -14,15 +14,16 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
-    maven(url="https://oss.sonatype.org/content/repositories/snapshots")
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+    maven(url = "https://s3.ap-northeast-1.amazonaws.com/dynamodb-local-tokyo/release") // for DynamoDBLocal Lib
 }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("io.github.boostchicken:spring-data-dynamodb:5.2.1")
+    implementation("com.amazonaws:DynamoDBLocal:1.11.119")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }

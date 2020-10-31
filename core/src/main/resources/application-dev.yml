@@ -1,0 +1,20 @@
+spring:
+  profiles:
+    include: default
+  data:
+    dynamodb:
+      entity2ddl:
+        auto: create-only
+        gsiProjectionType: ALL
+        readCapacity: 1
+        writeCapacity: 1
+
+amazon:
+  dynamodb:
+    endpoint: "https://dynamodb.ap-northeast-2.amazonaws.com"
+    region: "ap-northeast-2"
+    tablePrefix: "grape-sticker"
+    tableSuffix: "dev"
+  aws:
+    accesskey: "AKIA4X2PJ4464WBLTRPD"
+    secretkey: "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"

@@ -76,6 +76,8 @@ class MemberServiceTest {
                         BunchMember(BunchMemberKey(bunchId = "bunch11-345g-34g", memberId = "43ge4653-sde5tse5t-g345ghyrh"))))
         whenever(bunchMemberRepository.findByBunchId("bunch2-324f-34f")).thenReturn(HashSet())
 
+        whenever(bunchRepository.findById("bunch11-345g-34g"))
+                .thenReturn(Optional.of(Bunch(id = "bunch11-345g-34g", name = "tstsebunch")))
         whenever(bunchRepository.findById("bunch2-324f-34f"))
                 .thenReturn(Optional.of(Bunch(id = "bunch2-324f-34f", name = "tstsebunch")))
 
@@ -129,6 +131,10 @@ class MemberServiceTest {
 
     @Test
     fun testRemoveMember() {
+        whenever(memberRepository.findById("34faefa-ew5gfdg45fg-34tasrt"))
+                .thenReturn(Optional.of(Member(id = "34faefa-ew5gfdg45fg-34tasrt")))
+        whenever(bunchMemberRepository.findByBunchIdAndMemberId("34f34f-f34f43-34f34f", "34faefa-ew5gfdg45fg-34tasrt"))
+                .thenReturn(BunchMember(BunchMemberKey("34f34f-f34f43-34f34f", "34faefa-ew5gfdg45fg-34tasrt")))
         memberService.removeFromBunch(Bunch(id = "34f34f-f34f43-34f34f"), Member(id = "34faefa-ew5gfdg45fg-34tasrt"))
     }
 }
