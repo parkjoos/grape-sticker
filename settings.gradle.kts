@@ -1,1 +1,1 @@
-rootProject.name = "grape-sticker"
+include("api", "core")
