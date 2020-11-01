@@ -12,6 +12,6 @@ class LocalDateTimeConverter : DynamoDBTypeConverter<Date, LocalDateTime> {
     }
 
     override fun unconvert(source: Date): LocalDateTime {
-        return source.toInstant().atZone(TimeZone.getDefault().toZoneId()).toLocalDateTime()
+        return LocalDateTime.ofInstant(source.toInstant(), ZoneId.systemDefault())
     }
 }
