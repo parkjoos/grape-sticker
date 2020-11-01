@@ -2,6 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	base
+	id("org.springframework.boot") version "2.3.4.RELEASE"
+	id("io.spring.dependency-management") version "1.0.10.RELEASE"
 	kotlin("jvm") version "1.3.72"
 	kotlin("plugin.spring") version "1.3.72"
 }
@@ -15,6 +17,8 @@ allprojects {
 		maven(url = "https://s3.ap-northeast-1.amazonaws.com/dynamodb-local-tokyo/release") // for DynamoDBLocal Lib
 	}
 }
+
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 dependencies {
 	subprojects.forEach {
