@@ -1,13 +1,11 @@
-package com.kakao.jaypark.grapesticker.api
+package com.kakao.jaypark.grapesticker
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.web.reactive.config.EnableWebFlux
 
 @SpringBootApplication(scanBasePackages = ["com.kakao.jaypark.grapesticker"])
-@EnableWebFlux
-class ApiApplication
+class CoreApplication
 
 fun main(args: Array<String>) {
-    runApplication<ApiApplication>(*args)
+    runApplication<CoreApplication>(*args)
 }
