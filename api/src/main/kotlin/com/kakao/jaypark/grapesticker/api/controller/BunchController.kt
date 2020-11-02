@@ -4,10 +4,7 @@ import com.kakao.jaypark.grapesticker.api.controller.to.BunchTO
 import com.kakao.jaypark.grapesticker.domain.Member
 import com.kakao.jaypark.grapesticker.service.BunchService
 import com.kakao.jaypark.grapesticker.service.MemberService
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/bunches")
@@ -18,5 +15,13 @@ class BunchController(
     @PostMapping
     fun create(@RequestBody bunchTO: BunchTO) {
         bunchService.create(bunchTO.buildBunch(), Member())
+
+    }
+
+    @GetMapping("/{bunchId}")
+    fun get(@PathVariable bunchId: String): BunchTO {
+        val bunch = bunchService.get(bunchId)
+        val members = memberService.getBunchMembers(bunch)
+        return BunchTO.build(bunch, members)
     }
 }
