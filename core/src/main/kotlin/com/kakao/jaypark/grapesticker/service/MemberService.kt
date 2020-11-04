@@ -74,7 +74,7 @@ class MemberService(
         if (bunchMembers.stream().anyMatch { it.type == MemberType.MASTER }) {
             return
         }
-        val oldestMember = bunchMembers.minBy { member -> member.createdDate!! }
+        val oldestMember = bunchMembers.minByOrNull { member -> member.createdDate!! }
         makeMaster(bunch, get(oldestMember?.getMemberId()!!))
     }
 
@@ -102,5 +102,10 @@ class MemberService(
         val bunchMember = bunchMemberRepository.findByBunchIdAndMemberId(bunch.id!!, member.id!!)
                 ?: throw RuntimeException("already removed")
         bunchMemberRepository.delete(bunchMember)
+    }
+
+    fun getMap(idSet: Set<String>): Map<String, Member> {
+        val members = memberRepository.findByIdIn(idSet)
+        return members.map { it.id!! to it }.toMap()
     }
 }

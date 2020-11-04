@@ -12,6 +12,10 @@ class GrapeStickerService(
         var bunchRepository: BunchRepository
 ) {
     fun attach(bunch: Bunch, grape: Grape, member: Member) {
+
+        if (bunch.maxNumberOfGrapes <= bunch.grapes?.size ?: 0) {
+            throw RuntimeException("max number of grapes exceeded")
+        }
         grape.createdDate = LocalDateTime.now()
         grape.writerId = member.id!!
         bunch.attachGrape(grape)

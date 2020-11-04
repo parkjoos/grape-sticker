@@ -7,7 +7,6 @@ import com.kakao.jaypark.grapesticker.domain.Member
 import com.kakao.jaypark.grapesticker.repository.BunchMemberRepository
 import com.kakao.jaypark.grapesticker.repository.BunchRepository
 import org.springframework.stereotype.Service
-import java.util.stream.Collectors
 
 @Service
 class BunchService(
@@ -38,9 +37,8 @@ class BunchService(
 
     fun getAllBunchesByMember(member: Member): Set<Bunch> {
         val buncheMembers: Set<BunchMember> = bunchMemberRepository.findAllByMemberId(member.id!!)
-        return bunchRepository.findAllByIdIn(buncheMembers.stream()
-                .map { it.getBunchId() }
-                .collect(Collectors.toSet()))
+        return bunchRepository.findAllByIdIn(buncheMembers
+                .map { it.getBunchId() }.toSet())
     }
 
 }
