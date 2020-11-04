@@ -32,7 +32,7 @@ class GrapeStickerServiceTest {
 
     @Test
     fun testAttachSticker(){
-        val bunch = Bunch(id="testbundch-se4agf-weg-ae4tg", name = "testbunch")
+        val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch", maxNumberOfGrapes = 2)
         val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g")
         grapeStickerService.attach(bunch, grape, Member(id="tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com",name="jay.park"))
     }
@@ -40,7 +40,7 @@ class GrapeStickerServiceTest {
     @Test
     fun testAttachGrapeAtDuplicatedPosition(){
         assertThatThrownBy {
-            val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch")
+            val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch", maxNumberOfGrapes = 2)
             val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g")
             grapeStickerService.attach(bunch, grape, Member(id = "tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com", name = "jay.park"))
 
@@ -48,6 +48,19 @@ class GrapeStickerServiceTest {
             grapeStickerService.attach(bunch, grape2, Member(id = "tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com", name = "jay.park"))
         }.isInstanceOf(RuntimeException::class.java)
                 .hasMessage("grape position duplicated")
+    }
+
+    @Test
+    fun testAttachGrapeOverMaxNumberOfGrapes() {
+        assertThatThrownBy {
+            val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch", maxNumberOfGrapes = 1)
+            val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g")
+            grapeStickerService.attach(bunch, grape, Member(id = "tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com", name = "jay.park"))
+
+            val grape2 = Grape(position = 5, comment = "sicker2", writerId = "ememberis32-345g245-45g")
+            grapeStickerService.attach(bunch, grape2, Member(id = "tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com", name = "jay.park"))
+        }.isInstanceOf(RuntimeException::class.java)
+                .hasMessage("max number of grapes exceeded")
     }
 
     @Test

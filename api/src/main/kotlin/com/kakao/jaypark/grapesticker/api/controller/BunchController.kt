@@ -1,6 +1,7 @@
 package com.kakao.jaypark.grapesticker.api.controller
 
 import com.kakao.jaypark.grapesticker.api.controller.to.BunchTO
+import com.kakao.jaypark.grapesticker.api.controller.to.GrapeTO
 import com.kakao.jaypark.grapesticker.domain.Member
 import com.kakao.jaypark.grapesticker.service.BunchService
 import com.kakao.jaypark.grapesticker.service.MemberService
@@ -23,5 +24,19 @@ class BunchController(
         val bunch = bunchService.get(bunchId)
         val members = memberService.getBunchMembers(bunch)
         return BunchTO.build(bunch, members)
+    }
+
+    @GetMapping("/{bunchId}/grapes")
+    fun getGrapes(@PathVariable bunchId: String): Set<GrapeTO> {
+        val bunch = bunchService.get(bunchId)
+        val writerIdSet = bunch.grapes
+                ?.map { it.writerId }
+                ?.toSet()
+                .orEmpty()
+        val map = memberService.getMap(writerIdSet)
+        return bunch.grapes
+                ?.map { GrapeTO.build(it, map[it.writerId]!!) }
+                ?.toSet().orEmpty()
+
     }
 }
