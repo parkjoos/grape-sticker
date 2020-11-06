@@ -16,14 +16,22 @@ class GrapeStickerService(
         if (bunch.maxNumberOfGrapes <= bunch.grapes?.size ?: 0) {
             throw RuntimeException("max number of grapes exceeded")
         }
-        grape.createdDate = LocalDateTime.now()
         grape.writerId = member.id!!
+        grape.createdDate = LocalDateTime.now()
+        grape.lastModifiedDate = LocalDateTime.now()
         bunch.attachGrape(grape)
         bunchRepository.save(bunch)
     }
 
     fun remove(bunch: Bunch, grape: Grape) {
         bunch.grapes?.removeIf { it.position == grape.position }
+        bunchRepository.save(bunch)
+    }
+
+    fun modify(bunch: Bunch, grapeToModify: Grape) {
+        val grape = (bunch.grapes?.find { it.position == grapeToModify.position }
+                ?: throw RuntimeException("no grape at position"))
+        grape.modify(grapeToModify)
         bunchRepository.save(bunch)
     }
 

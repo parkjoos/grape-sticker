@@ -35,8 +35,9 @@ class BunchController(
                 .orEmpty()
         val map = memberService.getMap(writerIdSet)
         return bunch.grapes
-                ?.map { GrapeTO.build(it, map[it.writerId]!!) }
-                ?.toSet().orEmpty()
+                ?.map { GrapeTO.build(it, map.getValue(it.writerId)) }
+                ?.toSet()
+                .orEmpty()
 
     }
 }

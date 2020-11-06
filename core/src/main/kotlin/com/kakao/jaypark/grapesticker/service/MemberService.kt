@@ -7,7 +7,6 @@ import com.kakao.jaypark.grapesticker.domain.Member
 import com.kakao.jaypark.grapesticker.domain.enums.MemberStatus
 import com.kakao.jaypark.grapesticker.domain.enums.MemberType
 import com.kakao.jaypark.grapesticker.repository.BunchMemberRepository
-import com.kakao.jaypark.grapesticker.repository.BunchRepository
 import com.kakao.jaypark.grapesticker.repository.MemberRepository
 import org.springframework.stereotype.Service
 
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service
 class MemberService(
         private var memberRepository: MemberRepository,
         private var bunchMemberRepository: BunchMemberRepository,
-        private var bunchRepository: BunchRepository
+        private var bunchService: BunchService
 ) {
     fun join(member: Member) {
         memberRepository.findByEmail(member.email!!).forEach {
@@ -34,11 +33,10 @@ class MemberService(
         val bunchesByMember = bunchMemberRepository.findAllByMemberId(member.id!!)
         bunchesByMember.forEach {
             bunchMemberRepository.delete(it)
-            val bunch = bunchRepository.findById(it.getBunchId())
-                    .orElseThrow { RuntimeException("bunch not found") }
+            val bunch = bunchService.get(it.getBunchId())
             val bunchMembers = bunchMemberRepository.findByBunchId(bunch.id!!)
             if (bunchMembers.isEmpty()) {
-                bunchRepository.delete(bunch)
+                bunchService.delete(bunch)
             } else {
                 electMaster(bunch)
             }
@@ -80,7 +78,7 @@ class MemberService(
 
     fun makeMaster(bunch: Bunch, member: Member) {
         val bunchMember = bunchMemberRepository.findByBunchIdAndMemberId(bunch.id!!, member.id!!)
-                ?: throw RuntimeException("no bunch member")
+                ?: throw RuntimeException("not a bunch member")
         if (bunchMember.type == MemberType.MASTER) {
             throw RuntimeException("already Master")
         }

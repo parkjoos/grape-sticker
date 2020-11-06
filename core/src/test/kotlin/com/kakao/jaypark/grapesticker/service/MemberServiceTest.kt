@@ -7,7 +7,6 @@ import com.kakao.jaypark.grapesticker.domain.Member
 import com.kakao.jaypark.grapesticker.domain.enums.MemberStatus
 import com.kakao.jaypark.grapesticker.domain.enums.MemberType
 import com.kakao.jaypark.grapesticker.repository.BunchMemberRepository
-import com.kakao.jaypark.grapesticker.repository.BunchRepository
 import com.kakao.jaypark.grapesticker.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -18,6 +17,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.stubbing.OngoingStubbing
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.HashSet
 
@@ -32,7 +32,7 @@ class MemberServiceTest {
     private lateinit var memberRepository: MemberRepository
 
     @Mock
-    private lateinit var bunchRepository: BunchRepository
+    private lateinit var bunchService: BunchService
 
     @Mock
     private lateinit var bunchMemberRepository: BunchMemberRepository
@@ -76,10 +76,10 @@ class MemberServiceTest {
                         BunchMember(BunchMemberKey(bunchId = "bunch11-345g-34g", memberId = "43ge4653-sde5tse5t-g345ghyrh"))))
         whenever(bunchMemberRepository.findByBunchId("bunch2-324f-34f")).thenReturn(HashSet())
 
-        whenever(bunchRepository.findById("bunch11-345g-34g"))
-                .thenReturn(Optional.of(Bunch(id = "bunch11-345g-34g", name = "tstsebunch")))
-        whenever(bunchRepository.findById("bunch2-324f-34f"))
-                .thenReturn(Optional.of(Bunch(id = "bunch2-324f-34f", name = "tstsebunch")))
+        whenever(bunchService.get("bunch11-345g-34g"))
+                .thenReturn(Bunch(id = "bunch11-345g-34g", name = "tstsebunch"))
+        whenever(bunchService.get("bunch2-324f-34f"))
+                .thenReturn(Bunch(id = "bunch2-324f-34f", name = "tstsebunch"))
 
         memberService.withdrawal(Member(id = "q34faw4-435g245g-345g345g"))
     }
@@ -121,6 +121,24 @@ class MemberServiceTest {
     }
 
     @Test
+    fun testMakeMasterWhoAreNotAMember() {
+        assertThatThrownBy {
+            memberService.makeMaster(Bunch(id = "345y673467y-aw45rhj587-3t2345t"), Member(id = "2314t45gt-aw46se576-days10"))
+        }.isInstanceOf(RuntimeException::class.java)
+                .hasMessage("not a bunch member")
+    }
+
+    @Test
+    fun testMakeMasterWhoAreAlreafyMaster() {
+        whenever(bunchMemberRepository.findByBunchIdAndMemberId("bunch-34f-34fwe4", "member1-a34f-34f34-34f"))
+                .thenReturn(BunchMember(BunchMemberKey(bunchId = "bunch-34f-34fwe4", memberId = "member1-a34f-34f34-34f"), type = MemberType.MASTER))
+        assertThatThrownBy {
+            memberService.makeMaster(Bunch(id = "bunch-34f-34fwe4"), Member(id = "member1-a34f-34f34-34f"))
+        }.isInstanceOf(RuntimeException::class.java)
+                .hasMessage("already Master")
+    }
+
+    @Test
     fun testAddMember() {
         whenever(memberRepository.findById("34faefa-ew5gfdg45fg-34tasrt"))
                 .thenReturn(Optional.of(Member(id = "34faefa-ew5gfdg45fg-34tasrt")))
@@ -130,11 +148,63 @@ class MemberServiceTest {
     }
 
     @Test
+    fun testAddMemberWhoAlreadyMember() {
+        whenever(memberRepository.findById("34faefa-ew5gfdg45fg-34tasrt"))
+                .thenReturn(Optional.of(Member(id = "34faefa-ew5gfdg45fg-34tasrt")))
+        whenever(bunchMemberRepository.findByBunchIdAndMemberId("34f34f-f34f43-34f34f", "34faefa-ew5gfdg45fg-34tasrt"))
+                .thenReturn(BunchMember(BunchMemberKey("34f34f-f34f43-34f34f", "34faefa-ew5gfdg45fg-34tasrt")))
+        assertThatThrownBy {
+            memberService.addToBunch(Bunch(id = "34f34f-f34f43-34f34f"), Member(id = "34faefa-ew5gfdg45fg-34tasrt"))
+        }.isInstanceOf(RuntimeException::class.java)
+                .hasMessage("already member")
+    }
+
+    @Test
     fun testRemoveMember() {
         whenever(memberRepository.findById("34faefa-ew5gfdg45fg-34tasrt"))
                 .thenReturn(Optional.of(Member(id = "34faefa-ew5gfdg45fg-34tasrt")))
         whenever(bunchMemberRepository.findByBunchIdAndMemberId("34f34f-f34f43-34f34f", "34faefa-ew5gfdg45fg-34tasrt"))
                 .thenReturn(BunchMember(BunchMemberKey("34f34f-f34f43-34f34f", "34faefa-ew5gfdg45fg-34tasrt")))
         memberService.removeFromBunch(Bunch(id = "34f34f-f34f43-34f34f"), Member(id = "34faefa-ew5gfdg45fg-34tasrt"))
+    }
+
+    @Test
+    fun testRemoveMemberWhoAreNotAMember() {
+        whenever(memberRepository.findById("34faefa-ew5gfdg45fg-34tasrt"))
+                .thenReturn(Optional.of(Member(id = "34faefa-ew5gfdg45fg-34tasrt")))
+        assertThatThrownBy {
+            memberService.removeFromBunch(Bunch(id = "34f34f-f34f43-34f34f"), Member(id = "34faefa-ew5gfdg45fg-34tasrt"))
+        }.isInstanceOf(RuntimeException::class.java)
+                .hasMessage("already removed")
+
+    }
+
+    @Test
+    fun testGetMembersMap() {
+        val ids = hashSetOf("34faefa-ew5gfdg45fg-34tasrt", "3465745h56-356g356y-3456hg3456y", "345t345t-34g63425g25-b567zdt")
+        whenever(memberRepository.findByIdIn(ids))
+                .thenReturn(hashSetOf(Member(id = "34faefa-ew5gfdg45fg-34tasrt"), Member(id = "3465745h56-356g356y-3456hg3456y"), Member(id = "345t345t-34g63425g25-b567zdt")))
+        val map = memberService.getMap(ids)
+        assertThat(map).allSatisfy { id, member ->
+            assertThat(id).isIn(ids)
+            assertThat(member.id).isIn(ids)
+        }
+    }
+
+    @Test
+    fun testElectMasterToOldestMember() {
+        var bunch = Bunch(id = "2354t-245t245t-245tg245t", name = "test bunch")
+        whenever(bunchMemberRepository.findByBunchId("2354t-245t245t-245tg245t"))
+                .thenReturn(hashSetOf(BunchMember(key = BunchMemberKey("2354t-245t245t-245tg245t", "2314t45gt-aw46se576-days10"), createdDate = LocalDateTime.now().minusDays(10), type = MemberType.MEMBER),
+                        BunchMember(key = BunchMemberKey("2354t-245t245t-245tg245t", "4de56fjh5-e4g3456-days9"), createdDate = LocalDateTime.now().minusDays(9), type = MemberType.MEMBER),
+                        BunchMember(key = BunchMemberKey("2354t-245t245t-245tg245t", "456d35j4r-e5j8w342-days8"), createdDate = LocalDateTime.now().minusDays(8), type = MemberType.MEMBER),
+                        BunchMember(key = BunchMemberKey("2354t-245t245t-245tg245t", "dxfh45gh2-234h7563-days7"), createdDate = LocalDateTime.now().minusDays(8), type = MemberType.MEMBER)))
+        val expectedBunchMember = BunchMember(key = BunchMemberKey("2354t-245t245t-245tg245t", "2314t45gt-aw46se576-days10"), createdDate = LocalDateTime.now().minusDays(10), type = MemberType.MEMBER)
+        whenever(bunchMemberRepository.findByBunchIdAndMemberId("2354t-245t245t-245tg245t", "2314t45gt-aw46se576-days10"))
+                .thenReturn(expectedBunchMember)
+        whenever(memberRepository.findById("2314t45gt-aw46se576-days10")).thenReturn(Optional.of(Member(id = "2314t45gt-aw46se576-days10")))
+        memberService.electMaster(bunch)
+
+        assertThat(expectedBunchMember.type).isEqualTo(MemberType.MASTER)
     }
 }

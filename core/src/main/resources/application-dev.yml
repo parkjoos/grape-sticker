@@ -16,5 +16,5 @@ amazon:
     tablePrefix: "grape-sticker"
     tableSuffix: "dev"
   aws:
-    accesskey: "AKIA4X2PJ4464WBLTRPD"
-    secretkey: "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"
+    accesskey: ""
+    secretkey: ""
