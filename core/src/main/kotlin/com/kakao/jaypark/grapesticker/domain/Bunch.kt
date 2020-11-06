@@ -49,11 +49,16 @@ data class Bunch(
             grapes = hashSetOf(grape)
         } else {
             if (grapes?.any {
-                it.position == grape.position
-            }!!) {
+                        it.position == grape.position
+                    }!!) {
                 throw RuntimeException("grape position duplicated")
             }
             grapes?.add(grape)
         }
+    }
+
+    fun modify(bunchToModify: Bunch) {
+        this.name = bunchToModify.name
+        this.maxNumberOfGrapes = bunchToModify.maxNumberOfGrapes
     }
 }

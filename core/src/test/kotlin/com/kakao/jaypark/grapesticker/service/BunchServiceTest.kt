@@ -87,7 +87,7 @@ class BunchServiceTest {
         val member = Member(id="memberidtest-34fw34-w3g",email = "jaypark@kakao.com",name="jaypark")
 
         whenever(bunchMemberRepository.findAllByMemberId(member.id!!))
-                .thenReturn(hashSetOf(BunchMember(BunchMemberKey(bunchId="randombunchdf-43gae4-a4ef", memberId = member.id!!))))
+                .thenReturn(hashSetOf(BunchMember(BunchMemberKey(bunchId = "randombunchdf-43gae4-a4ef", memberId = member.id!!))))
 
         whenever(bunchRepository.findAllByIdIn(hashSetOf("randombunchdf-43gae4-a4ef")))
                 .thenReturn(hashSetOf(bunch))
@@ -96,5 +96,22 @@ class BunchServiceTest {
             bunchService.create(bunch, member)
         }.isInstanceOf(RuntimeException::class.java)
                 .hasMessage("bunch name duplicated")
+    }
+
+    @Test
+    fun testDeleteBunch() {
+        val bunch = Bunch(id = "234tf2356-se67t76-2134r13t", name = "테스트용 포토송이")
+        whenever(bunchRepository.findById(bunch.id!!)).thenReturn(Optional.of(bunch))
+        bunchService.delete(bunch)
+
+    }
+
+    @Test
+    fun testModifyBunch() {
+        val bunch = Bunch(id = "234tf2356-se67t76-2134r13t", name = "테스트용 포토송이", maxNumberOfGrapes = 10)
+        whenever(bunchRepository.findById(bunch.id!!)).thenReturn(Optional.of(bunch))
+        bunchService.modify(bunch.copy(name = "alter name", maxNumberOfGrapes = 15))
+        assertThat(bunch.name).isEqualTo("alter name")
+        assertThat(bunch.maxNumberOfGrapes).isEqualTo(15)
     }
 }

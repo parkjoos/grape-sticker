@@ -14,6 +14,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.stubbing.OngoingStubbing
+import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
 class GrapeStickerServiceTest {
@@ -31,10 +32,13 @@ class GrapeStickerServiceTest {
     private lateinit var grapeStickerService: GrapeStickerService
 
     @Test
-    fun testAttachSticker(){
+    fun testAttachSticker() {
         val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch", maxNumberOfGrapes = 2)
         val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g")
-        grapeStickerService.attach(bunch, grape, Member(id="tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com",name="jay.park"))
+        grapeStickerService.attach(bunch, grape, Member(id = "tests4-w4ts4t-s4w5s", email = "jay.park@kakao.com", name = "jay.park"))
+        assertThat(grape.createdDate).isNotNull
+        assertThat(grape.lastModifiedDate).isNotNull
+
     }
 
     @Test
@@ -71,4 +75,41 @@ class GrapeStickerServiceTest {
 
         assertThat(bunch.grapes).doesNotContain(grape)
     }
+
+    @Test
+    fun testModifyGrape() {
+        val yesterday = LocalDateTime.now().minusDays(1)
+        val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g", lastModifiedDate = yesterday)
+        val grapeToModify = Grape(position = 5, comment = "sicker2", writerId = "3456y34567y-345g245-45g")
+        val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch", grapes = hashSetOf(grape))
+
+        grapeStickerService.modify(bunch, grapeToModify)
+
+        assertThat(bunch.grapes).anyMatch {
+            it.position == grapeToModify.position
+        }.allSatisfy {
+            assertThat(it.comment).isEqualTo(grapeToModify.comment)
+            assertThat(it.writerId).isEqualTo(grapeToModify.writerId)
+            assertThat(it.lastModifiedDate).isNotEqualTo(yesterday)
+        }
+    }
+
+    @Test
+    fun testModifyGrapeIllegalPosition() {
+        val grape = Grape(position = 1, comment = "sicker1", writerId = "ememberis32-345g245-45g")
+        val grapeToModify = Grape(position = 5, comment = "sicker2", writerId = "ememberis32-345g245-45g")
+        val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch", grapes = hashSetOf(grape))
+
+        assertThatThrownBy {
+            grape.modify(grapeToModify)
+        }.isInstanceOf(IllegalArgumentException::class.java)
+                .hasMessage("can modify only same position")
+
+        assertThatThrownBy {
+            grapeStickerService.modify(bunch, grapeToModify)
+        }.isInstanceOf(RuntimeException::class.java)
+                .hasMessage("no grape at position")
+
+    }
+
 }

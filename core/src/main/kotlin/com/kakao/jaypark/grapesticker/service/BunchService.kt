@@ -41,4 +41,15 @@ class BunchService(
                 .map { it.getBunchId() }.toSet())
     }
 
+    fun delete(bunch: Bunch) {
+        val target = get(bunchId = bunch.id!!)
+        bunchRepository.delete(target)
+    }
+
+    fun modify(bunchToModify: Bunch) {
+        val target = get(bunchId = bunchToModify.id!!)
+        target.modify(bunchToModify)
+        bunchRepository.save(target)
+    }
+
 }

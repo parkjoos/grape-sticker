@@ -1,7 +1,5 @@
 package com.kakao.jaypark.grapesticker.utils;
 
-import lombok.NoArgsConstructor;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,16 +7,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-import static lombok.AccessLevel.PRIVATE;
-
 /**
  * Helper class for initializing AWS DynamoDB to run with sqlite4java for local testing.
  * <p>
  * Copied from: https://github.com/redskap/aws-dynamodb-java-example-local-testing
  */
-@NoArgsConstructor(access = PRIVATE)
 public abstract class AwsDynamoDbLocalTestUtils {
     private static final String BASE_LIBRARY_NAME = "sqlite4java";
+
+    private AwsDynamoDbLocalTestUtils() {
+    }
 
     /**
      * Sets the sqlite4java library path system parameter if it is not set already.

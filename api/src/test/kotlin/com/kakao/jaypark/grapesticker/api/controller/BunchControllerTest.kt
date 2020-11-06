@@ -91,4 +91,34 @@ class BunchControllerTest(@Autowired val mockMvc: MockMvc) {
                 .andExpect(status().isOk)
                 .andDo(print())
     }
+
+    @Test
+    fun testGetBunchesAllOfMine() {
+
+    }
+
+    @Test
+    fun testModifyBunch() {
+
+    }
+
+    @Test
+    fun testDeleteBunch() {
+
+    }
+
+    @Test
+    fun testAttachGrape() {
+
+    }
+
+    @Test
+    fun testRemoveGrape() {
+
+    }
+
+    @Test
+    fun testModifyGrape() {
+
+    }
 }
