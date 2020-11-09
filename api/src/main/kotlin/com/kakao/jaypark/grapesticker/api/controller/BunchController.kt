@@ -26,6 +26,13 @@ class BunchController(
         return BunchTO.build(bunch, members)
     }
 
+    @PutMapping("/{bunchId}")
+    fun get(@PathVariable bunchId: String, @RequestBody bunchTO: BunchTO) {
+        val bunch = bunchTO.buildBunch()
+        bunch.id = bunchId
+        bunchService.modify(bunch)
+    }
+
     @GetMapping("/{bunchId}/grapes")
     fun getGrapes(@PathVariable bunchId: String): Set<GrapeTO> {
         val bunch = bunchService.get(bunchId)
