@@ -19,8 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -94,12 +93,33 @@ class BunchControllerTest(@Autowired val mockMvc: MockMvc) {
 
     @Test
     fun testGetBunchesAllOfMine() {
-
+        mockMvc.perform(get("/bunches"))
+                .andExpect(status().isOk)
+                .andDo(print())
     }
 
     @Test
     fun testModifyBunch() {
+        val beforeBunch = Bunch(id = "3465y356y-3546y4567u47-3546g356g",
+                name = "bunch name sample1",
+                maxNumberOfGrapes = 15,
+                stickerType = GrapeStickerType.PRAISE,
+                grapes = hashSetOf(Grape(position = 1, comment = "test", writerId = "emember34r-134r234r-2345r234r"),
+                        Grape(position = 2, comment = "test2", writerId = "emember34r-134r234r-2345r234r"),
+                        Grape(position = 5, comment = "test3", writerId = "eme234rf34r-q34fq34-vse4rf3e")),
+                createdDate = LocalDateTime.now(),
+                lastModifiedDate = LocalDateTime.now())
+        whenever(bunchService.get("2352345-245t6356-qerg24356"))
+                .thenReturn(beforeBunch);
 
+        val bunch = BunchTO(name = "modify grape bunch1", maxNumberOfGrapes = 20, stickerType = GrapeStickerType.PRAISE)
+        mockMvc.perform(put("/bunches/2352345-245t6356-qerg24356")
+                .content(Json.encodeToString(bunch))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(CharEncoding.UTF_8))
+                .andExpect(status().isOk)
+                .andDo(print())
     }
 
     @Test
