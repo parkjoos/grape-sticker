@@ -71,9 +71,21 @@ class GrapeStickerServiceTest {
     fun testRemoveSticker() {
         val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g")
         val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch", grapes = hashSetOf(grape))
-        grapeStickerService.remove(bunch, grape)
+        grapeStickerService.remove(bunch, 5)
 
         assertThat(bunch.grapes).doesNotContain(grape)
+    }
+
+    @Test
+    fun testRemoveStickerAtNotExistsPosition() {
+        val grape = Grape(position = 5, comment = "sicker1", writerId = "ememberis32-345g245-45g")
+        val bunch = Bunch(id = "testbundch-se4agf-weg-ae4tg", name = "testbunch", grapes = hashSetOf(grape))
+
+        assertThatThrownBy {
+            grapeStickerService.remove(bunch, 2)
+        }.isInstanceOf(RuntimeException::class.java)
+                .hasMessageContaining("no grape at position")
+
     }
 
     @Test

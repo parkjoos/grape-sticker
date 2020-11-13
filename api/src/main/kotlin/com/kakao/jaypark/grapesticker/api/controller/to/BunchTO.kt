@@ -31,6 +31,14 @@ data class BunchTO(
                     lastModifiedDate = bunch.lastModifiedDate!!,
                     members = members.map { MemberTO.build(it) }.toSet())
         }
+
+        fun build(bunch: Bunch): BunchTO {
+            return BunchTO(name = bunch.name!!,
+                    maxNumberOfGrapes = bunch.maxNumberOfGrapes,
+                    stickerType = bunch.stickerType,
+                    createdDate = bunch.createdDate!!,
+                    lastModifiedDate = bunch.lastModifiedDate!!)
+        }
     }
 
 

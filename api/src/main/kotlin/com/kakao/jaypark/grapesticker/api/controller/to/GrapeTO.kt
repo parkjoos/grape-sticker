@@ -12,8 +12,12 @@ data class GrapeTO(
         @Serializable(with = LocalDateTimeSerializer::class)
         var createdDate: LocalDateTime? = null,
         var comment: String? = null,
-        var writer: MemberTO
+        var writer: MemberTO? = null
 ) {
+    fun buildGrape(): Grape {
+        return Grape(position = position, comment = comment)
+    }
+
     companion object {
         fun build(grape: Grape, member: Member): GrapeTO {
             return GrapeTO(grape.position, grape.createdDate, grape.comment!!, MemberTO.build(member))
