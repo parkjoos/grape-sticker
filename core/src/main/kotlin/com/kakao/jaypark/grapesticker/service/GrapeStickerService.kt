@@ -23,8 +23,11 @@ class GrapeStickerService(
         bunchRepository.save(bunch)
     }
 
-    fun remove(bunch: Bunch, grape: Grape) {
-        bunch.grapes?.removeIf { it.position == grape.position }
+    fun remove(bunch: Bunch, position: Int) {
+        val removed = bunch.grapes?.removeIf { it.position == position }
+        if (!removed!!) {
+            throw RuntimeException("no grape at position")
+        }
         bunchRepository.save(bunch)
     }
 

@@ -1,12 +1,14 @@
 package com.kakao.jaypark.grapesticker.api.controller
 
 import com.kakao.jaypark.grapesticker.api.controller.to.BunchTO
+import com.kakao.jaypark.grapesticker.api.controller.to.GrapeTO
 import com.kakao.jaypark.grapesticker.domain.Bunch
 import com.kakao.jaypark.grapesticker.domain.Grape
 import com.kakao.jaypark.grapesticker.domain.Member
 import com.kakao.jaypark.grapesticker.domain.enums.GrapeStickerType
 import com.kakao.jaypark.grapesticker.domain.enums.MemberStatus
 import com.kakao.jaypark.grapesticker.service.BunchService
+import com.kakao.jaypark.grapesticker.service.GrapeStickerService
 import com.kakao.jaypark.grapesticker.service.MemberService
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -33,6 +35,9 @@ class BunchControllerTest(@Autowired val mockMvc: MockMvc) {
 
     @MockBean
     lateinit var bunchService: BunchService
+
+    @MockBean
+    lateinit var grapeStickerService: GrapeStickerService
 
     @MockBean
     lateinit var memberService: MemberService
@@ -88,13 +93,27 @@ class BunchControllerTest(@Autowired val mockMvc: MockMvc) {
 
         mockMvc.perform(get("/bunches/3465y356y-3546y4567u47-3546g356g/grapes"))
                 .andExpect(status().isOk)
+                .andExpect(jsonPath("[0]").isNotEmpty)
+                .andExpect(jsonPath("[2]").isNotEmpty)
                 .andDo(print())
     }
 
     @Test
     fun testGetBunchesAllOfMine() {
+        val expectedBunch = Bunch(id = "3465y356y-3546y4567u47-3546g356g",
+                name = "bunch name sample1",
+                maxNumberOfGrapes = 15,
+                stickerType = GrapeStickerType.PRAISE,
+                createdDate = LocalDateTime.now(),
+                lastModifiedDate = LocalDateTime.now())
+        whenever(bunchService.getAllBunchesByMember(BunchController.LOGIN_MEMBER)).thenReturn(hashSetOf(
+                expectedBunch,
+                expectedBunch.copy(id = "34tr32t-se57er675-5436y3456y", name = "bunch name sample2"),
+                expectedBunch.copy(id = "235tasetgf-sae5y354tg-0aw4634", name = "bunch name sample3")
+        ))
         mockMvc.perform(get("/bunches"))
                 .andExpect(status().isOk)
+                .andExpect(jsonPath("[0]").isNotEmpty)
                 .andDo(print())
     }
 
@@ -124,21 +143,70 @@ class BunchControllerTest(@Autowired val mockMvc: MockMvc) {
 
     @Test
     fun testDeleteBunch() {
-
+        val expectedBunch = Bunch(id = "3465y356y-3546y4567u47-3546g356g",
+                name = "bunch name sample1",
+                maxNumberOfGrapes = 15,
+                stickerType = GrapeStickerType.PRAISE,
+                createdDate = LocalDateTime.now(),
+                lastModifiedDate = LocalDateTime.now())
+        whenever(bunchService.get("3465y356y-3546y4567u47-3546g356g"))
+                .thenReturn(expectedBunch)
+        mockMvc.perform(delete("/bunches/3465y356y-3546y4567u47-3546g356g"))
+                .andDo(print())
+                .andExpect(status().isOk)
     }
 
     @Test
     fun testAttachGrape() {
-
+        val grape = GrapeTO(position = 1, comment = "test")
+        mockMvc.perform(post("/bunches/3465y356y-3546y4567u47-3546g356g/grapes")
+                .content(Json.encodeToString(grape))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(CharEncoding.UTF_8))
+                .andDo(print())
+                .andExpect(status().isOk)
     }
 
     @Test
     fun testRemoveGrape() {
-
+        val expectedBunch = Bunch(id = "3465y356y-3546y4567u47-3546g356g",
+                name = "bunch name sample1",
+                maxNumberOfGrapes = 15,
+                stickerType = GrapeStickerType.PRAISE,
+                grapes = hashSetOf(Grape(position = 1, comment = "test", writerId = "emember34r-134r234r-2345r234r"),
+                        Grape(position = 2, comment = "test2", writerId = "emember34r-134r234r-2345r234r"),
+                        Grape(position = 5, comment = "test3", writerId = "eme234rf34r-q34fq34-vse4rf3e")),
+                createdDate = LocalDateTime.now(),
+                lastModifiedDate = LocalDateTime.now())
+        whenever(bunchService.get("3465y356y-3546y4567u47-3546g356g"))
+                .thenReturn(expectedBunch)
+        mockMvc.perform(delete("/bunches/3465y356y-3546y4567u47-3546g356g/grapes/position/1"))
+                .andDo(print())
+                .andExpect(status().isOk)
     }
 
     @Test
     fun testModifyGrape() {
+        val beforeBunch = Bunch(id = "3465y356y-3546y4567u47-3546g356g",
+                name = "bunch name sample1",
+                maxNumberOfGrapes = 15,
+                stickerType = GrapeStickerType.PRAISE,
+                grapes = hashSetOf(Grape(position = 1, comment = "test", writerId = "emember34r-134r234r-2345r234r"),
+                        Grape(position = 2, comment = "test2", writerId = "emember34r-134r234r-2345r234r"),
+                        Grape(position = 5, comment = "test3", writerId = "eme234rf34r-q34fq34-vse4rf3e")),
+                createdDate = LocalDateTime.now(),
+                lastModifiedDate = LocalDateTime.now())
+        whenever(bunchService.get("2352345-245t6356-qerg24356"))
+                .thenReturn(beforeBunch);
 
+        val grape = GrapeTO(position = 1, comment = "test modify")
+        mockMvc.perform(put("/bunches/3465y356y-3546y4567u47-3546g356g/grapes")
+                .content(Json.encodeToString(grape))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(CharEncoding.UTF_8))
+                .andExpect(status().isOk)
+                .andDo(print())
     }
 }

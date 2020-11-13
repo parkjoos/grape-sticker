@@ -24,7 +24,7 @@ data class Grape(
 
         @DynamoDBAttribute
         @NotNull
-        var writerId: String
+        var writerId: String? = null
 ) {
         public fun modify(grapeToModify: Grape) {
                 if (this.position != grapeToModify.position) {
