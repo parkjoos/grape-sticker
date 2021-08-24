@@ -23,11 +23,12 @@
     </springProfile>
 
     <springProfile name="dev">
-        <root level="INFO">
+        <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="applicationFileAppender"/>
         </root>
         <logger name="org.springframework" level="INFO"/>
+        <logger name="org.springframework.security" level="DEBUG"/>
     </springProfile>
 
     <springProfile name="production">

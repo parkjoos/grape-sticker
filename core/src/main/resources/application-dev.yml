@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    include: default
   data:
     dynamodb:
       entity2ddl:
