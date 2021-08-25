@@ -40,29 +40,6 @@ class MemberServiceTest {
     private lateinit var memberService: MemberService
 
     @Test
-    fun testJoin() {
-        memberService.join(Member(email = "jay.park@kakao.com"))
-    }
-
-    @Test
-    fun testJoinAlreadyJoined() {
-        whenever(memberRepository.findByEmail("joined@kakao.com"))
-                .thenReturn(hashSetOf(Member(status = MemberStatus.VALID, email = "joined@kakao.com")))
-        assertThatThrownBy {
-            memberService.join(Member(email = "joined@kakao.com"))
-        }.isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("already joined")
-
-        whenever(memberRepository.findByEmail("pending@kakao.com"))
-                .thenReturn(hashSetOf(Member(status = MemberStatus.PENDING, email = "pending@kakao.com")))
-        assertThatThrownBy {
-            memberService.join(Member(email = "pending@kakao.com"))
-        }.isInstanceOf(RuntimeException::class.java)
-                .hasMessageContaining("pending")
-
-    }
-
-    @Test
     fun testWithdrawal() {
         whenever(memberRepository.findById("q34faw4-435g245g-345g345g"))
                 .thenReturn(Optional.of(Member(status = MemberStatus.VALID, email = "joined@kakao.com")))

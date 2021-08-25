@@ -12,8 +12,10 @@ data class Member(
         var id: String? = null,
 
         @DynamoDBAttribute
-        @DynamoDBIndexHashKey(globalSecondaryIndexName = "idx-member-email", attributeName = "email")
-        @NotNull
+        @DynamoDBIndexHashKey(globalSecondaryIndexName = "idx-member-oauth2id", attributeName = "o_auth2_id")
+        var oAuth2Id: String? = null,
+
+        @DynamoDBAttribute
         var email: String? = null,
 
         @DynamoDBAttribute

@@ -7,5 +7,6 @@ import org.springframework.data.repository.CrudRepository
 @EnableScan
 interface MemberRepository : CrudRepository<Member, String> {
     fun findByEmail(email: String): Set<Member>
+    fun findByOAuth2Id(oAuth2Id: String): Set<Member>
     fun findByIdIn(memberIds: Set<String>): Set<Member>
 }

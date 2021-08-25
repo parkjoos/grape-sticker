@@ -1,7 +1,5 @@
 package net.jaypark.grapesticker.api.security
 
-import net.jaypark.grapesticker.domain.Member
-
 
 class OAuthAttributes(
     val attributes: MutableMap<String, Any>,
@@ -12,15 +10,11 @@ class OAuthAttributes(
     val email: String?
 
 ) {
-    fun toMember(): Member {
-        return Member(email = email, name = name)
-    }
-
     companion object {
-        fun of(registrationId: String?, userNameAttributeName: String?, attribute: Map<String, Any>): OAuthAttributes? {
+        fun of(registrationId: String?, userNameAttributeName: String?, attribute: Map<String, Any>): OAuthAttributes {
             return when (registrationId) {
                 "kakao" -> ofKakao(registrationId, userNameAttributeName, attribute)
-                else -> null
+                else -> throw RuntimeException("not defined oAuth2 registration id")
             }
         }
 

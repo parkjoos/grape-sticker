@@ -2,12 +2,16 @@ package net.jaypark.grapesticker.api.controller
 
 import net.jaypark.grapesticker.api.controller.to.BunchTO
 import net.jaypark.grapesticker.api.controller.to.GrapeTO
+import net.jaypark.grapesticker.api.security.GrapeStickerOAuth2User
 import net.jaypark.grapesticker.domain.Member
-import net.jaypark.grapesticker.domain.enums.MemberStatus
 import net.jaypark.grapesticker.service.BunchService
 import net.jaypark.grapesticker.service.GrapeStickerService
 import net.jaypark.grapesticker.service.MemberService
+import org.springframework.security.core.AuthenticatedPrincipal
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+
+
 @RestController
 @RequestMapping("/bunches")
 class BunchController(
@@ -16,10 +20,6 @@ class BunchController(
         private val memberService: MemberService
 ) {
 
-    companion object {
-        val LOGIN_MEMBER = Member("test-member-id", "testMember@kakao.com", "testName", MemberStatus.VALID)
-    }
-
     @PostMapping
     fun create(@RequestBody bunchTO: BunchTO) {
         bunchService.create(bunchTO.buildBunch(), Member())
@@ -27,8 +27,10 @@ class BunchController(
     }
 
     @GetMapping
-    fun getAllOfMine(): List<BunchTO> {
-        val bunches = bunchService.getAllBunchesByMember(LOGIN_MEMBER)
+    fun getAllOfMine(@AuthenticationPrincipal authenticatedPrincipal: AuthenticatedPrincipal): List<BunchTO> {
+        val memberId = (authenticatedPrincipal as GrapeStickerOAuth2User).getMemberId()
+        val loginMember = memberService.get(memberId)
+        val bunches = bunchService.getAllBunchesByMember(loginMember)
         return bunches.map { BunchTO.build(it) }
     }
 
@@ -68,9 +70,15 @@ class BunchController(
     }
 
     @PostMapping("/{bunchId}/grapes")
-    fun attachGrapes(@PathVariable bunchId: String, @RequestBody grapeTO: GrapeTO) {
+    fun attachGrapes(
+        @PathVariable bunchId: String,
+        @RequestBody grapeTO: GrapeTO,
+        @AuthenticationPrincipal authenticatedPrincipal: AuthenticatedPrincipal
+    ) {
+        val memberId = (authenticatedPrincipal as GrapeStickerOAuth2User).getMemberId()
+        val loginMember = memberService.get(memberId)
         val bunch = bunchService.get(bunchId)
-        grapeStickerService.attach(bunch, grapeTO.buildGrape(), LOGIN_MEMBER)
+        grapeStickerService.attach(bunch, grapeTO.buildGrape(), loginMember)
 
     }
 

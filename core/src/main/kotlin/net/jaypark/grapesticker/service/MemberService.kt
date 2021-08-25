@@ -11,20 +11,20 @@ import org.springframework.stereotype.Service
 
 @Service
 class MemberService(
-        private var memberRepository: MemberRepository,
-        private var bunchMemberRepository: BunchMemberRepository,
-        private var bunchService: BunchService
+    private var memberRepository: MemberRepository,
+    private var bunchMemberRepository: BunchMemberRepository,
+    private var bunchService: BunchService
 ) {
-    fun joinOrUpdate(member: Member?): Member {
-        return getOneByEmail(member?.email!!)?.also {
-            it.name = member.name
-        } ?: memberRepository.save(member)
+    fun joinOrUpdate(member: Member): Member {
+        return getOneByOAuth2Id(member.oAuth2Id!!)
+            ?.also {
+                it.name = member.name
+                it.email = member.email
+            } ?: memberRepository.save(member)
     }
 
-    fun join(member: Member) {
-        getOneByEmail(member.email!!)?.also {
-            throw RuntimeException("already joined email")
-        } ?: memberRepository.save(member)
+    private fun getOneByOAuth2Id(oAuth2Id: String): Member? {
+        return memberRepository.findByOAuth2Id(oAuth2Id).firstOrNull()
     }
 
     fun withdrawal(member: Member) {
@@ -47,7 +47,7 @@ class MemberService(
 
     fun get(memberId: String): Member {
         return memberRepository.findById(memberId)
-                .orElseThrow { RuntimeException("member not exists") }
+            .orElseThrow { RuntimeException("member not exists") }
     }
 
     fun getOneByEmail(email: String): Member? {
@@ -78,7 +78,7 @@ class MemberService(
 
     fun makeMaster(bunch: Bunch, member: Member) {
         val bunchMember = bunchMemberRepository.findByBunchIdAndMemberId(bunch.id!!, member.id!!)
-                ?: throw RuntimeException("not a bunch member")
+            ?: throw RuntimeException("not a bunch member")
         if (bunchMember.type == MemberType.MASTER) {
             throw RuntimeException("already Master")
         }
@@ -92,13 +92,18 @@ class MemberService(
         if (findByBunchIdAndMemberId != null) {
             throw RuntimeException("already member")
         }
-        bunchMemberRepository.save(BunchMember(BunchMemberKey(bunchId = bunch.id!!, memberId = member.id!!), type = MemberType.MEMBER))
+        bunchMemberRepository.save(
+            BunchMember(
+                BunchMemberKey(bunchId = bunch.id!!, memberId = member.id!!),
+                type = MemberType.MEMBER
+            )
+        )
     }
 
     fun removeFromBunch(bunch: Bunch, member: Member) {
         get(member.id!!)
         val bunchMember = bunchMemberRepository.findByBunchIdAndMemberId(bunch.id!!, member.id!!)
-                ?: throw RuntimeException("already removed")
+            ?: throw RuntimeException("already removed")
         bunchMemberRepository.delete(bunchMember)
     }
 
